@@ -10,7 +10,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 // gasPrice: 10000000000000 // 10000 GWEI
 // gasPrice: 20000000000000 // 20000 GWEI
 module.exports = {
-  solidity: "0.5.16",
+  solidity: "0.6.12",
   networks: {
     matic: {
       url: RPC_URL,

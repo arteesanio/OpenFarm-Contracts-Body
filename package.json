@@ -19,6 +19,7 @@
     "hardhat": "^2.9.1"
   },
   "dependencies": {
+    "@pancakeswap/pancake-swap-lib": "^0.0.4",
     "dotenv": "^16.0.0",
     "web3modal": "^1.9.5"
   }
