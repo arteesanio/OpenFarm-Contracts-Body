@@ -623,7 +623,7 @@ contract FarmReserve {
 
     // Info.
     PoolInfo public poolInfo;
-    // Info of each user that stakes Syrup tokens.
+    // Info of each user that stakes Bond tokens.
     mapping (address => UserInfo) public userInfo;
 
     // addresses list
@@ -703,7 +703,7 @@ contract FarmReserve {
     }
 
 
-    // Deposit Syrup tokens to FarmReserve for Reward allocation.
+    // Deposit Bond tokens to FarmReserve for Reward allocation.
     function deposit(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
@@ -720,7 +720,7 @@ contract FarmReserve {
         emit Deposit(msg.sender, _amount);
     }
 
-    // Withdraw Syrup tokens from FarmReserve.
+    // Withdraw Bond tokens from FarmReserve.
     function withdraw(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
