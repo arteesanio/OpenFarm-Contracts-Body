@@ -1,8 +1,22 @@
-// Sources flattened with hardhat v2.9.1 https://hardhat.org
+// SPDX-License-Identifier: GPL-3.0-or-later
 
-// File @pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol@v0.0.4
+/**
+// Pancakeswap Fork
 
-// SPDX-License-Identifier: MIT
+// IBEP20 -> IBaseCash
+// BEP20 -> BaseCash
+// SyrupBar -> FarmBond
+
+// CakeToken -> FarmCash
+// safeCakeTransfer -> safeCashTransfer
+
+// MasterChef -> Printer
+// syrup -> bond
+// cake -> cash
+// CAKE -> CASH
+// CAKEs -> CASHs
+**/
+
 
 pragma solidity >=0.4.0;
 

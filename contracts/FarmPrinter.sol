@@ -1,219 +1,21 @@
-// Sources flattened with hardhat v2.9.1 https://hardhat.org
-
-// File @pancakeswap/pancake-swap-lib/contracts/GSN/Context.sol@v0.0.4
-
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pragma solidity >=0.4.0;
-
-/*
- * @dev Provides information about the current execution context, including the
- * sender of the transaction and its data. While these are generally available
- * via msg.sender and msg.data, they should not be accessed in such a direct
- * manner, since when dealing with GSN meta-transactions the account sending and
- * paying for execution may not be the actual sender (as far as an application
- * is concerned).
- *
- * This contract is only required for intermediate, library-like contracts.
- */
-contract Context {
-    // Empty internal constructor, to prevent people from mistakenly deploying
-    // an instance of this contract, which should be used via inheritance.
-    constructor() internal {}
-
-    function _msgSender() internal view returns (address payable) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view returns (bytes memory) {
-        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-        return msg.data;
-    }
-}
-
-
-// File @pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol@v0.0.4
-
-
-
-pragma solidity >=0.4.0;
-
 /**
- * @dev Contract module which provides a basic access control mechanism, where
- * there is an account (an owner) that can be granted exclusive access to
- * specific functions.
- *
- * By default, the owner account will be the one that deploys the contract. This
- * can later be changed with {transferOwnership}.
- *
- * This module is used through inheritance. It will make available the modifier
- * `onlyOwner`, which can be applied to your functions to restrict their use to
- * the owner.
- */
-contract Ownable is Context {
-    address private _owner;
+// Pancakeswap Fork
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+// IBEP20 -> IBaseCash
+// BEP20 -> BaseCash
+// SyrupBar -> FarmBond
 
-    /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor() internal {
-        address msgSender = _msgSender();
-        _owner = msgSender;
-        emit OwnershipTransferred(address(0), msgSender);
-    }
+// CakeToken -> FarmCash
+// safeCakeTransfer -> safeCashTransfer
 
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(_owner == _msgSender(), 'Ownable: caller is not the owner');
-        _;
-    }
-
-    /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
-     *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
-     */
-    function renounceOwnership() public onlyOwner {
-        emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
-     */
-    function transferOwnership(address newOwner) public onlyOwner {
-        _transferOwnership(newOwner);
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     */
-    function _transferOwnership(address newOwner) internal {
-        require(newOwner != address(0), 'Ownable: new owner is the zero address');
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-}
-
-
-// File @pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol@v0.0.4
-
-
-
-pragma solidity >=0.4.0;
-
-interface IBEP20 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
-
-    /**
-     * @dev Returns the token decimals.
-     */
-    function decimals() external view returns (uint8);
-
-    /**
-     * @dev Returns the token symbol.
-     */
-    function symbol() external view returns (string memory);
-
-    /**
-     * @dev Returns the token name.
-     */
-    function name() external view returns (string memory);
-
-    /**
-     * @dev Returns the bep token owner.
-     */
-    function getOwner() external view returns (address);
-
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transfer(address recipient, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(address _owner, address spender) external view returns (uint256);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * IMPORTANT: Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to {approve}. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-
-// File @pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol@v0.0.4
-
+// MasterChef -> Printer
+// syrup -> bond
+// cake -> cash
+// CAKE -> CASH
+// CAKEs -> CASHs
+**/
 
 
 pragma solidity >=0.4.0;
@@ -405,7 +207,109 @@ library SafeMath {
 }
 
 
-// File @pancakeswap/pancake-swap-lib/contracts/utils/Address.sol@v0.0.4
+
+
+
+
+pragma solidity >=0.4.0;
+
+interface IBaseCash {
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256);
+
+    /**
+     * @dev Returns the token decimals.
+     */
+    function decimals() external view returns (uint8);
+
+    /**
+     * @dev Returns the token symbol.
+     */
+    function symbol() external view returns (string memory);
+
+    /**
+     * @dev Returns the token name.
+     */
+    function name() external view returns (string memory);
+
+    /**
+     * @dev Returns the bep token owner.
+     */
+    function getOwner() external view returns (address);
+
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) external view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address recipient, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through {transferFrom}. This is
+     * zero by default.
+     *
+     * This value changes when {approve} or {transferFrom} are called.
+     */
+    function allowance(address _owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to {approve}. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+
+
 
 
 
@@ -570,7 +474,220 @@ library Address {
 }
 
 
-// File @pancakeswap/pancake-swap-lib/contracts/token/BEP20/BEP20.sol@v0.0.4
+
+
+
+
+pragma solidity ^0.6.0;
+
+
+
+/**
+ * @title SafeBEP20
+ * @dev Wrappers around BaseCash operations that throw on failure (when the token
+ * contract returns false). Tokens that return no value (and instead revert or
+ * throw on failure) are also supported, non-reverting calls are assumed to be
+ * successful.
+ * To use this library you can add a `using SafeBEP20 for IBaseCash;` statement to your contract,
+ * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
+ */
+library SafeBEP20 {
+    using SafeMath for uint256;
+    using Address for address;
+
+    function safeTransfer(
+        IBaseCash token,
+        address to,
+        uint256 value
+    ) internal {
+        _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
+    }
+
+    function safeTransferFrom(
+        IBaseCash token,
+        address from,
+        address to,
+        uint256 value
+    ) internal {
+        _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+    }
+
+    /**
+     * @dev Deprecated. This function has issues similar to the ones found in
+     * {IBaseCash-approve}, and its usage is discouraged.
+     *
+     * Whenever possible, use {safeIncreaseAllowance} and
+     * {safeDecreaseAllowance} instead.
+     */
+    function safeApprove(
+        IBaseCash token,
+        address spender,
+        uint256 value
+    ) internal {
+        // safeApprove should only be called when setting an initial allowance,
+        // or when resetting it to zero. To increase and decrease it, use
+        // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
+        // solhint-disable-next-line max-line-length
+        require(
+            (value == 0) || (token.allowance(address(this), spender) == 0),
+            'SafeBEP20: approve from non-zero to non-zero allowance'
+        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
+    }
+
+    function safeIncreaseAllowance(
+        IBaseCash token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).add(value);
+        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    }
+
+    function safeDecreaseAllowance(
+        IBaseCash token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).sub(
+            value,
+            'SafeBEP20: decreased allowance below zero'
+        );
+        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    }
+
+    /**
+     * @dev Imitates a Solidity high-level call (i.e. a regular function call to a contract), relaxing the requirement
+     * on the return value: the return value is optional (but if data is returned, it must not be false).
+     * @param token The token targeted by the call.
+     * @param data The call data (encoded using abi.encode or one of its variants).
+     */
+    function _callOptionalReturn(IBaseCash token, bytes memory data) private {
+        // We need to perform a low level call here, to bypass Solidity's return data size checking mechanism, since
+        // we're implementing it ourselves. We use {Address.functionCall} to perform this call, which verifies that
+        // the target address contains contract code and also asserts for success in the low-level call.
+
+        bytes memory returndata = address(token).functionCall(data, 'SafeBEP20: low-level call failed');
+        if (returndata.length > 0) {
+            // Return data is optional
+            // solhint-disable-next-line max-line-length
+            require(abi.decode(returndata, (bool)), 'SafeBEP20: BaseCash operation did not succeed');
+        }
+    }
+}
+
+
+
+
+
+
+pragma solidity >=0.4.0;
+
+/*
+ * @dev Provides information about the current execution context, including the
+ * sender of the transaction and its data. While these are generally available
+ * via msg.sender and msg.data, they should not be accessed in such a direct
+ * manner, since when dealing with GSN meta-transactions the account sending and
+ * paying for execution may not be the actual sender (as far as an application
+ * is concerned).
+ *
+ * This contract is only required for intermediate, library-like contracts.
+ */
+contract Context {
+    // Empty internal constructor, to prevent people from mistakenly deploying
+    // an instance of this contract, which should be used via inheritance.
+    constructor() internal {}
+
+    function _msgSender() internal view returns (address payable) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view returns (bytes memory) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
+}
+
+
+
+
+
+
+pragma solidity >=0.4.0;
+
+/**
+ * @dev Contract module which provides a basic access control mechanism, where
+ * there is an account (an owner) that can be granted exclusive access to
+ * specific functions.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() internal {
+        address msgSender = _msgSender();
+        _owner = msgSender;
+        emit OwnershipTransferred(address(0), msgSender);
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(_owner == _msgSender(), 'Ownable: caller is not the owner');
+        _;
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public onlyOwner {
+        emit OwnershipTransferred(_owner, address(0));
+        _owner = address(0);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public onlyOwner {
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     */
+    function _transferOwnership(address newOwner) internal {
+        require(newOwner != address(0), 'Ownable: new owner is the zero address');
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+}
+
+
+
 
 
 
@@ -581,19 +698,19 @@ pragma solidity >=0.4.0;
 
 
 /**
- * @dev Implementation of the {IBEP20} interface.
+ * @dev Implementation of the {IBaseCash} interface.
  *
  * This implementation is agnostic to the way tokens are created. This means
  * that a supply mechanism has to be added in a derived contract using {_mint}.
  * For a generic mechanism see {BEP20PresetMinterPauser}.
  *
  * TIP: For a detailed writeup see our guide
- * https://forum.zeppelin.solutions/t/how-to-implement-BEP20-supply-mechanisms/226[How
+ * https://forum.zeppelin.solutions/t/how-to-implement-BaseCash-supply-mechanisms/226[How
  * to implement supply mechanisms].
  *
  * We have followed general OpenZeppelin guidelines: functions revert instead
  * of returning `false` on failure. This behavior is nonetheless conventional
- * and does not conflict with the expectations of BEP20 applications.
+ * and does not conflict with the expectations of BaseCash applications.
  *
  * Additionally, an {Approval} event is emitted on calls to {transferFrom}.
  * This allows applications to reconstruct the allowance for all accounts just
@@ -602,9 +719,9 @@ pragma solidity >=0.4.0;
  *
  * Finally, the non-standard {decreaseAllowance} and {increaseAllowance}
  * functions have been added to mitigate the well-known issues around setting
- * allowances. See {IBEP20-approve}.
+ * allowances. See {IBaseCash-approve}.
  */
-contract BEP20 is Context, IBEP20, Ownable {
+contract BaseCash is Context, IBaseCash, Ownable {
     using SafeMath for uint256;
     using Address for address;
 
@@ -662,21 +779,21 @@ contract BEP20 is Context, IBEP20, Ownable {
     }
 
     /**
-     * @dev See {BEP20-totalSupply}.
+     * @dev See {BaseCash-totalSupply}.
      */
     function totalSupply() public override view returns (uint256) {
         return _totalSupply;
     }
 
     /**
-     * @dev See {BEP20-balanceOf}.
+     * @dev See {BaseCash-balanceOf}.
      */
     function balanceOf(address account) public override view returns (uint256) {
         return _balances[account];
     }
 
     /**
-     * @dev See {BEP20-transfer}.
+     * @dev See {BaseCash-transfer}.
      *
      * Requirements:
      *
@@ -689,14 +806,14 @@ contract BEP20 is Context, IBEP20, Ownable {
     }
 
     /**
-     * @dev See {BEP20-allowance}.
+     * @dev See {BaseCash-allowance}.
      */
     function allowance(address owner, address spender) public override view returns (uint256) {
         return _allowances[owner][spender];
     }
 
     /**
-     * @dev See {BEP20-approve}.
+     * @dev See {BaseCash-approve}.
      *
      * Requirements:
      *
@@ -708,10 +825,10 @@ contract BEP20 is Context, IBEP20, Ownable {
     }
 
     /**
-     * @dev See {BEP20-transferFrom}.
+     * @dev See {BaseCash-transferFrom}.
      *
      * Emits an {Approval} event indicating the updated allowance. This is not
-     * required by the EIP. See the note at the beginning of {BEP20};
+     * required by the EIP. See the note at the beginning of {BaseCash};
      *
      * Requirements:
      * - `sender` and `recipient` cannot be the zero address.
@@ -728,7 +845,7 @@ contract BEP20 is Context, IBEP20, Ownable {
         _approve(
             sender,
             _msgSender(),
-            _allowances[sender][_msgSender()].sub(amount, 'BEP20: transfer amount exceeds allowance')
+            _allowances[sender][_msgSender()].sub(amount, 'BaseCash: transfer amount exceeds allowance')
         );
         return true;
     }
@@ -737,7 +854,7 @@ contract BEP20 is Context, IBEP20, Ownable {
      * @dev Atomically increases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {BEP20-approve}.
+     * problems described in {BaseCash-approve}.
      *
      * Emits an {Approval} event indicating the updated allowance.
      *
@@ -754,7 +871,7 @@ contract BEP20 is Context, IBEP20, Ownable {
      * @dev Atomically decreases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {BEP20-approve}.
+     * problems described in {BaseCash-approve}.
      *
      * Emits an {Approval} event indicating the updated allowance.
      *
@@ -768,7 +885,7 @@ contract BEP20 is Context, IBEP20, Ownable {
         _approve(
             _msgSender(),
             spender,
-            _allowances[_msgSender()][spender].sub(subtractedValue, 'BEP20: decreased allowance below zero')
+            _allowances[_msgSender()][spender].sub(subtractedValue, 'BaseCash: decreased allowance below zero')
         );
         return true;
     }
@@ -805,10 +922,10 @@ contract BEP20 is Context, IBEP20, Ownable {
         address recipient,
         uint256 amount
     ) internal {
-        require(sender != address(0), 'BEP20: transfer from the zero address');
-        require(recipient != address(0), 'BEP20: transfer to the zero address');
+        require(sender != address(0), 'BaseCash: transfer from the zero address');
+        require(recipient != address(0), 'BaseCash: transfer to the zero address');
 
-        _balances[sender] = _balances[sender].sub(amount, 'BEP20: transfer amount exceeds balance');
+        _balances[sender] = _balances[sender].sub(amount, 'BaseCash: transfer amount exceeds balance');
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
     }
@@ -823,7 +940,7 @@ contract BEP20 is Context, IBEP20, Ownable {
      * - `to` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal {
-        require(account != address(0), 'BEP20: mint to the zero address');
+        require(account != address(0), 'BaseCash: mint to the zero address');
 
         _totalSupply = _totalSupply.add(amount);
         _balances[account] = _balances[account].add(amount);
@@ -842,9 +959,9 @@ contract BEP20 is Context, IBEP20, Ownable {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 amount) internal {
-        require(account != address(0), 'BEP20: burn from the zero address');
+        require(account != address(0), 'BaseCash: burn from the zero address');
 
-        _balances[account] = _balances[account].sub(amount, 'BEP20: burn amount exceeds balance');
+        _balances[account] = _balances[account].sub(amount, 'BaseCash: burn amount exceeds balance');
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
     }
@@ -867,8 +984,8 @@ contract BEP20 is Context, IBEP20, Ownable {
         address spender,
         uint256 amount
     ) internal {
-        require(owner != address(0), 'BEP20: approve from the zero address');
-        require(spender != address(0), 'BEP20: approve to the zero address');
+        require(owner != address(0), 'BaseCash: approve from the zero address');
+        require(spender != address(0), 'BaseCash: approve to the zero address');
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -885,19 +1002,19 @@ contract BEP20 is Context, IBEP20, Ownable {
         _approve(
             account,
             _msgSender(),
-            _allowances[account][_msgSender()].sub(amount, 'BEP20: burn amount exceeds allowance')
+            _allowances[account][_msgSender()].sub(amount, 'BaseCash: burn amount exceeds allowance')
         );
     }
 }
 
 
-// File contracts/CakeToken.sol
+
 
 pragma solidity 0.6.12;
 
-// CakeToken with Governance.
-contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+// OpenFarmCash with Governance.
+contract OpenFarmCash is BaseCash('OpenFarm Cash', 'CASH') {
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (Printer).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -1005,9 +1122,9 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "CAKE::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "CAKE::delegateBySig: invalid nonce");
-        require(now <= expiry, "CAKE::delegateBySig: signature expired");
+        require(signatory != address(0), "BaseCash::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "BaseCash::delegateBySig: invalid nonce");
+        require(now <= expiry, "BaseCash::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -1037,7 +1154,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         view
         returns (uint256)
     {
-        require(blockNumber < block.number, "CAKE::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "BaseCash::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -1074,7 +1191,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CAKEs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CASHs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -1110,7 +1227,7 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "CAKE::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "BaseCash::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
@@ -1135,13 +1252,13 @@ contract CakeToken is BEP20('PancakeSwap Token', 'Cake') {
 }
 
 
-// File contracts/SyrupBar.sol
+
 
 pragma solidity 0.6.12;
 
-// SyrupBar with Governance.
-contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+// FarmBond with Governance.
+contract FarmBond is BaseCash('OpenFarm Bond', 'BOND') {
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (Printer).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -1152,23 +1269,22 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
         _moveDelegates(_delegates[_from], address(0), _amount);
     }
 
-    // The CAKE TOKEN!
-    CakeToken public cake;
+    OpenFarmCash public cash;
 
 
     constructor(
-        CakeToken _cake
+        OpenFarmCash _cash
     ) public {
-        cake = _cake;
+        cash = _cash;
     }
 
-    // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
-    function safeCakeTransfer(address _to, uint256 _amount) public onlyOwner {
-        uint256 cakeBal = cake.balanceOf(address(this));
-        if (_amount > cakeBal) {
-            cake.transfer(_to, cakeBal);
+    // Safe cash transfer function, just in case if rounding error causes pool to not have enough CASHs.
+    function safeCashTransfer(address _to, uint256 _amount) public onlyOwner {
+        uint256 cashBal = cash.balanceOf(address(this));
+        if (_amount > cashBal) {
+            cash.transfer(_to, cashBal);
         } else {
-            cake.transfer(_to, _amount);
+            cash.transfer(_to, _amount);
         }
     }
 
@@ -1274,9 +1390,9 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "CAKE::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "CAKE::delegateBySig: invalid nonce");
-        require(now <= expiry, "CAKE::delegateBySig: signature expired");
+        require(signatory != address(0), "BaseCash::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "BaseCash::delegateBySig: invalid nonce");
+        require(now <= expiry, "BaseCash::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -1306,7 +1422,7 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
         view
         returns (uint256)
     {
-        require(blockNumber < block.number, "CAKE::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "BaseCash::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -1343,7 +1459,7 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CAKEs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CASHs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -1379,7 +1495,7 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "CAKE::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "BaseCash::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
@@ -1400,5 +1516,335 @@ contract SyrupBar is BEP20('SyrupBar Token', 'SYRUP') {
         uint256 chainId;
         assembly { chainId := chainid() }
         return chainId;
+    }
+}
+
+
+
+
+pragma solidity 0.6.12;
+
+
+
+
+
+// import "@nomiclabs/buidler/console.sol";
+
+interface IMigratorChef {
+    // Perform LP token migration from legacy Farm to NewFarm.
+    // Take the current LP token address and return the new LP token address.
+    // Migrator should have full access to the caller's LP token.
+    // Return the new LP token address.
+    //
+    // XXX Migrator must have allowance access to Farm LP tokens.
+    // NewFarm must mint EXACTLY the same amount of NewFarm LP tokens or
+    // else something bad will happen. Traditional Farm does not
+    // do that so be careful!
+    function migrate(IBaseCash token) external returns (IBaseCash);
+}
+
+// Printer is the master of Cash. He can make Cash and he is a fair guy.
+//
+// Note that it's ownable and the owner wields tremendous power. The ownership
+// will be transferred to a governance smart contract once CASH is sufficiently
+// distributed and the community can show to govern itself.
+//
+// Have fun reading it. Hopefully it's bug-free. God bless.
+contract Printer is Ownable {
+    using SafeMath for uint256;
+    using SafeBEP20 for IBaseCash;
+
+    // Info of each user.
+    struct UserInfo {
+        uint256 amount;     // How many LP tokens the user has provided.
+        uint256 rewardDebt; // Reward debt. See explanation below.
+        //
+        // We do some fancy math here. Basically, any point in time, the amount of CASHs
+        // entitled to a user but is pending to be distributed is:
+        //
+        //   pending reward = (user.amount * pool.accCashPerShare) - user.rewardDebt
+        //
+        // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
+        //   1. The pool's `accCashPerShare` (and `lastRewardBlock`) gets updated.
+        //   2. User receives the pending reward sent to his/her address.
+        //   3. User's `amount` gets updated.
+        //   4. User's `rewardDebt` gets updated.
+    }
+
+    // Info of each pool.
+    struct PoolInfo {
+        IBaseCash lpToken;           // Address of LP token contract.
+        uint256 allocPoint;       // How many allocation points assigned to this pool. CASHs to distribute per block.
+        uint256 lastRewardBlock;  // Last block number that CASHs distribution occurs.
+        uint256 accCashPerShare; // Accumulated CASHs per share, times 1e12. See below.
+    }
+
+    OpenFarmCash public cash;
+    FarmBond public bond;
+    // Dev address.
+    address public devaddr;
+    // CASH tokens created per block.
+    uint256 public cashPerBlock;
+    // Bonus muliplier for early cash makers.
+    uint256 public BONUS_MULTIPLIER = 1;
+    // The migrator contract. It has a lot of power. Can only be set through governance (owner).
+    IMigratorChef public migrator;
+
+    // Info of each pool.
+    PoolInfo[] public poolInfo;
+    // Info of each user that stakes LP tokens.
+    mapping (uint256 => mapping (address => UserInfo)) public userInfo;
+    // Total allocation points. Must be the sum of all allocation points in all pools.
+    uint256 public totalAllocPoint = 0;
+    // The block number when CASH mining starts.
+    uint256 public startBlock;
+
+    event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
+    event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
+    event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
+
+    constructor(
+        OpenFarmCash _cash,
+        FarmBond _bond,
+        address _devaddr,
+        uint256 _cashPerBlock,
+        uint256 _startBlock
+    ) public {
+        cash = _cash;
+        bond = _bond;
+        devaddr = _devaddr;
+        cashPerBlock = _cashPerBlock;
+        startBlock = _startBlock;
+
+        // staking pool
+        poolInfo.push(PoolInfo({
+            lpToken: _cash,
+            allocPoint: 1000,
+            lastRewardBlock: startBlock,
+            accCashPerShare: 0
+        }));
+
+        totalAllocPoint = 1000;
+
+    }
+
+    function updateMultiplier(uint256 multiplierNumber) public onlyOwner {
+        BONUS_MULTIPLIER = multiplierNumber;
+    }
+
+    function poolLength() external view returns (uint256) {
+        return poolInfo.length;
+    }
+
+    // Add a new lp to the pool. Can only be called by the owner.
+    // XXX DO NOT add the same LP token more than once. Rewards will be messed up if you do.
+    function add(uint256 _allocPoint, IBaseCash _lpToken, bool _withUpdate) public onlyOwner {
+        if (_withUpdate) {
+            massUpdatePools();
+        }
+        uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
+        totalAllocPoint = totalAllocPoint.add(_allocPoint);
+        poolInfo.push(PoolInfo({
+            lpToken: _lpToken,
+            allocPoint: _allocPoint,
+            lastRewardBlock: lastRewardBlock,
+            accCashPerShare: 0
+        }));
+        updateStakingPool();
+    }
+
+    // Update the given pool's CASH allocation point. Can only be called by the owner.
+    function set(uint256 _pid, uint256 _allocPoint, bool _withUpdate) public onlyOwner {
+        if (_withUpdate) {
+            massUpdatePools();
+        }
+        uint256 prevAllocPoint = poolInfo[_pid].allocPoint;
+        poolInfo[_pid].allocPoint = _allocPoint;
+        if (prevAllocPoint != _allocPoint) {
+            totalAllocPoint = totalAllocPoint.sub(prevAllocPoint).add(_allocPoint);
+            updateStakingPool();
+        }
+    }
+
+    function updateStakingPool() internal {
+        uint256 length = poolInfo.length;
+        uint256 points = 0;
+        for (uint256 pid = 1; pid < length; ++pid) {
+            points = points.add(poolInfo[pid].allocPoint);
+        }
+        if (points != 0) {
+            points = points.div(3);
+            totalAllocPoint = totalAllocPoint.sub(poolInfo[0].allocPoint).add(points);
+            poolInfo[0].allocPoint = points;
+        }
+    }
+
+    // Set the migrator contract. Can only be called by the owner.
+    function setMigrator(IMigratorChef _migrator) public onlyOwner {
+        migrator = _migrator;
+    }
+
+    // Migrate lp token to another lp contract. Can be called by anyone. We trust that migrator contract is good.
+    function migrate(uint256 _pid) public {
+        require(address(migrator) != address(0), "migrate: no migrator");
+        PoolInfo storage pool = poolInfo[_pid];
+        IBaseCash lpToken = pool.lpToken;
+        uint256 bal = lpToken.balanceOf(address(this));
+        lpToken.safeApprove(address(migrator), bal);
+        IBaseCash newLpToken = migrator.migrate(lpToken);
+        require(bal == newLpToken.balanceOf(address(this)), "migrate: bad");
+        pool.lpToken = newLpToken;
+    }
+
+    // Return reward multiplier over the given _from to _to block.
+    function getMultiplier(uint256 _from, uint256 _to) public view returns (uint256) {
+        return _to.sub(_from).mul(BONUS_MULTIPLIER);
+    }
+
+    // View function to see pending CASHs on frontend.
+    function pendingCash(uint256 _pid, address _user) external view returns (uint256) {
+        PoolInfo storage pool = poolInfo[_pid];
+        UserInfo storage user = userInfo[_pid][_user];
+        uint256 accCashPerShare = pool.accCashPerShare;
+        uint256 lpSupply = pool.lpToken.balanceOf(address(this));
+        if (block.number > pool.lastRewardBlock && lpSupply != 0) {
+            uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
+            uint256 cashReward = multiplier.mul(cashPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
+            accCashPerShare = accCashPerShare.add(cashReward.mul(1e12).div(lpSupply));
+        }
+        return user.amount.mul(accCashPerShare).div(1e12).sub(user.rewardDebt);
+    }
+
+    // Update reward variables for all pools. Be careful of gas spending!
+    function massUpdatePools() public {
+        uint256 length = poolInfo.length;
+        for (uint256 pid = 0; pid < length; ++pid) {
+            updatePool(pid);
+        }
+    }
+
+
+    // Update reward variables of the given pool to be up-to-date.
+    function updatePool(uint256 _pid) public {
+        PoolInfo storage pool = poolInfo[_pid];
+        if (block.number <= pool.lastRewardBlock) {
+            return;
+        }
+        uint256 lpSupply = pool.lpToken.balanceOf(address(this));
+        if (lpSupply == 0) {
+            pool.lastRewardBlock = block.number;
+            return;
+        }
+        uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
+        uint256 cashReward = multiplier.mul(cashPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
+        cash.mint(devaddr, cashReward.div(10));
+        cash.mint(address(bond), cashReward);
+        pool.accCashPerShare = pool.accCashPerShare.add(cashReward.mul(1e12).div(lpSupply));
+        pool.lastRewardBlock = block.number;
+    }
+
+    // Deposit LP tokens to Printer for CASH allocation.
+    function deposit(uint256 _pid, uint256 _amount) public {
+
+        require (_pid != 0, 'deposit CASH by staking');
+
+        PoolInfo storage pool = poolInfo[_pid];
+        UserInfo storage user = userInfo[_pid][msg.sender];
+        updatePool(_pid);
+        if (user.amount > 0) {
+            uint256 pending = user.amount.mul(pool.accCashPerShare).div(1e12).sub(user.rewardDebt);
+            if(pending > 0) {
+                safeCashTransfer(msg.sender, pending);
+            }
+        }
+        if (_amount > 0) {
+            pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
+            user.amount = user.amount.add(_amount);
+        }
+        user.rewardDebt = user.amount.mul(pool.accCashPerShare).div(1e12);
+        emit Deposit(msg.sender, _pid, _amount);
+    }
+
+    // Withdraw LP tokens from Printer.
+    function withdraw(uint256 _pid, uint256 _amount) public {
+
+        require (_pid != 0, 'withdraw CASH by unstaking');
+        PoolInfo storage pool = poolInfo[_pid];
+        UserInfo storage user = userInfo[_pid][msg.sender];
+        require(user.amount >= _amount, "withdraw: not good");
+
+        updatePool(_pid);
+        uint256 pending = user.amount.mul(pool.accCashPerShare).div(1e12).sub(user.rewardDebt);
+        if(pending > 0) {
+            safeCashTransfer(msg.sender, pending);
+        }
+        if(_amount > 0) {
+            user.amount = user.amount.sub(_amount);
+            pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        }
+        user.rewardDebt = user.amount.mul(pool.accCashPerShare).div(1e12);
+        emit Withdraw(msg.sender, _pid, _amount);
+    }
+
+    // Stake CASH tokens to Printer
+    function enterStaking(uint256 _amount) public {
+        PoolInfo storage pool = poolInfo[0];
+        UserInfo storage user = userInfo[0][msg.sender];
+        updatePool(0);
+        if (user.amount > 0) {
+            uint256 pending = user.amount.mul(pool.accCashPerShare).div(1e12).sub(user.rewardDebt);
+            if(pending > 0) {
+                safeCashTransfer(msg.sender, pending);
+            }
+        }
+        if(_amount > 0) {
+            pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
+            user.amount = user.amount.add(_amount);
+        }
+        user.rewardDebt = user.amount.mul(pool.accCashPerShare).div(1e12);
+
+        bond.mint(msg.sender, _amount);
+        emit Deposit(msg.sender, 0, _amount);
+    }
+
+    // Withdraw CASH tokens from STAKING.
+    function leaveStaking(uint256 _amount) public {
+        PoolInfo storage pool = poolInfo[0];
+        UserInfo storage user = userInfo[0][msg.sender];
+        require(user.amount >= _amount, "withdraw: not good");
+        updatePool(0);
+        uint256 pending = user.amount.mul(pool.accCashPerShare).div(1e12).sub(user.rewardDebt);
+        if(pending > 0) {
+            safeCashTransfer(msg.sender, pending);
+        }
+        if(_amount > 0) {
+            user.amount = user.amount.sub(_amount);
+            pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        }
+        user.rewardDebt = user.amount.mul(pool.accCashPerShare).div(1e12);
+
+        bond.burn(msg.sender, _amount);
+        emit Withdraw(msg.sender, 0, _amount);
+    }
+
+    // Withdraw without caring about rewards. EMERGENCY ONLY.
+    function emergencyWithdraw(uint256 _pid) public {
+        PoolInfo storage pool = poolInfo[_pid];
+        UserInfo storage user = userInfo[_pid][msg.sender];
+        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+        emit EmergencyWithdraw(msg.sender, _pid, user.amount);
+        user.amount = 0;
+        user.rewardDebt = 0;
+    }
+
+    // Safe cash transfer function, just in case if rounding error causes pool to not have enough CASHs.
+    function safeCashTransfer(address _to, uint256 _amount) internal {
+        bond.safeCashTransfer(_to, _amount);
+    }
+
+    // Update dev address by the previous dev.
+    function dev(address _devaddr) public {
+        require(msg.sender == devaddr, "dev: wut?");
+        devaddr = _devaddr;
     }
 }
