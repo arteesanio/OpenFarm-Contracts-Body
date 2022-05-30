@@ -1607,16 +1607,14 @@ contract FarmPrinter is Ownable {
 
     constructor(
         OpenFarmCash _cash,
-        FarmBond _bond,
-        address _devaddr,
-        uint256 _cashPerBlock,
-        uint256 _startBlock
+        FarmBond _bond
     ) public {
         cash = _cash;
         bond = _bond;
-        devaddr = _devaddr;
-        cashPerBlock = _cashPerBlock;
-        startBlock = _startBlock;
+
+        devaddr = 0xE5CD6B21455E87D5F8DaaB3a0AC1f0C728E09e66;
+        cashPerBlock = 1 ether;
+        startBlock = block.number;
 
         // staking pool
         poolInfo.push(PoolInfo({
@@ -1627,7 +1625,6 @@ contract FarmPrinter is Ownable {
         }));
 
         totalAllocPoint = 1000;
-
     }
 
     function updateMultiplier(uint256 multiplierNumber) public onlyOwner {
