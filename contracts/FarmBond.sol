@@ -10,8 +10,10 @@
 // CakeToken -> FarmCash
 // safeCakeTransfer -> safeCashTransfer
 
-// MasterChef -> Printer
+// MasterChef -> FarmPrinter
+// SousChef -> FarmReserve
 // syrup -> bond
+// SYRUP -> BOND
 // cake -> cash
 // CAKE -> CASH
 // CAKEs -> CASHs

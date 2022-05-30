@@ -10,8 +10,10 @@
 // CakeToken -> FarmCash
 // safeCakeTransfer -> safeCashTransfer
 
-// MasterChef -> Printer
+// MasterChef -> FarmPrinter
+// SousChef -> FarmReserve
 // syrup -> bond
+// SYRUP -> BOND
 // cake -> cash
 // CAKE -> CASH
 // CAKEs -> CASHs
@@ -1014,7 +1016,7 @@ pragma solidity 0.6.12;
 
 // OpenFarmCash with Governance.
 contract OpenFarmCash is BaseCash('OpenFarm Cash', 'CASH') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (Printer).
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (FarmPrinter).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -1258,7 +1260,7 @@ pragma solidity 0.6.12;
 
 // FarmBond with Governance.
 contract FarmBond is BaseCash('OpenFarm Bond', 'BOND') {
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (Printer).
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (FarmPrinter).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -1543,14 +1545,14 @@ interface IMigratorChef {
     function migrate(IBaseCash token) external returns (IBaseCash);
 }
 
-// Printer is the master of Cash. He can make Cash and he is a fair guy.
+// FarmPrinter is the master of Cash. He can make Cash and he is a fair guy.
 //
 // Note that it's ownable and the owner wields tremendous power. The ownership
 // will be transferred to a governance smart contract once CASH is sufficiently
 // distributed and the community can show to govern itself.
 //
 // Have fun reading it. Hopefully it's bug-free. God bless.
-contract Printer is Ownable {
+contract FarmPrinter is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBaseCash;
 
@@ -1743,7 +1745,7 @@ contract Printer is Ownable {
         pool.lastRewardBlock = block.number;
     }
 
-    // Deposit LP tokens to Printer for CASH allocation.
+    // Deposit LP tokens to FarmPrinter for CASH allocation.
     function deposit(uint256 _pid, uint256 _amount) public {
 
         require (_pid != 0, 'deposit CASH by staking');
@@ -1765,7 +1767,7 @@ contract Printer is Ownable {
         emit Deposit(msg.sender, _pid, _amount);
     }
 
-    // Withdraw LP tokens from Printer.
+    // Withdraw LP tokens from FarmPrinter.
     function withdraw(uint256 _pid, uint256 _amount) public {
 
         require (_pid != 0, 'withdraw CASH by unstaking');
@@ -1786,7 +1788,7 @@ contract Printer is Ownable {
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
-    // Stake CASH tokens to Printer
+    // Stake CASH tokens to FarmPrinter
     function enterStaking(uint256 _amount) public {
         PoolInfo storage pool = poolInfo[0];
         UserInfo storage user = userInfo[0][msg.sender];

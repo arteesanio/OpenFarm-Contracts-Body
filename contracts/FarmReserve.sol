@@ -10,8 +10,10 @@
 // CakeToken -> FarmCash
 // safeCakeTransfer -> safeCashTransfer
 
-// MasterChef -> Printer
+// MasterChef -> FarmPrinter
+// SousChef -> FarmReserve
 // syrup -> bond
+// SYRUP -> BOND
 // cake -> cash
 // CAKE -> CASH
 // CAKEs -> CASHs
@@ -207,13 +209,13 @@ library SafeMath {
 }
 
 
-// File @pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol@v0.0.4
+
 
 
 
 pragma solidity >=0.4.0;
 
-interface IBEP20 {
+interface IBaseCash {
     /**
      * @dev Returns the amount of tokens in existence.
      */
@@ -309,7 +311,7 @@ interface IBEP20 {
 }
 
 
-// File @pancakeswap/pancake-swap-lib/contracts/utils/Address.sol@v0.0.4
+
 
 
 
@@ -474,7 +476,7 @@ library Address {
 }
 
 
-// File @pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol@v0.0.4
+
 
 
 
@@ -484,11 +486,11 @@ pragma solidity ^0.6.0;
 
 /**
  * @title SafeBEP20
- * @dev Wrappers around BEP20 operations that throw on failure (when the token
+ * @dev Wrappers around BaseCash operations that throw on failure (when the token
  * contract returns false). Tokens that return no value (and instead revert or
  * throw on failure) are also supported, non-reverting calls are assumed to be
  * successful.
- * To use this library you can add a `using SafeBEP20 for IBEP20;` statement to your contract,
+ * To use this library you can add a `using SafeBEP20 for IBaseCash;` statement to your contract,
  * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
  */
 library SafeBEP20 {
@@ -496,7 +498,7 @@ library SafeBEP20 {
     using Address for address;
 
     function safeTransfer(
-        IBEP20 token,
+        IBaseCash token,
         address to,
         uint256 value
     ) internal {
@@ -504,7 +506,7 @@ library SafeBEP20 {
     }
 
     function safeTransferFrom(
-        IBEP20 token,
+        IBaseCash token,
         address from,
         address to,
         uint256 value
@@ -514,13 +516,13 @@ library SafeBEP20 {
 
     /**
      * @dev Deprecated. This function has issues similar to the ones found in
-     * {IBEP20-approve}, and its usage is discouraged.
+     * {IBaseCash-approve}, and its usage is discouraged.
      *
      * Whenever possible, use {safeIncreaseAllowance} and
      * {safeDecreaseAllowance} instead.
      */
     function safeApprove(
-        IBEP20 token,
+        IBaseCash token,
         address spender,
         uint256 value
     ) internal {
@@ -536,7 +538,7 @@ library SafeBEP20 {
     }
 
     function safeIncreaseAllowance(
-        IBEP20 token,
+        IBaseCash token,
         address spender,
         uint256 value
     ) internal {
@@ -545,7 +547,7 @@ library SafeBEP20 {
     }
 
     function safeDecreaseAllowance(
-        IBEP20 token,
+        IBaseCash token,
         address spender,
         uint256 value
     ) internal {
@@ -562,7 +564,7 @@ library SafeBEP20 {
      * @param token The token targeted by the call.
      * @param data The call data (encoded using abi.encode or one of its variants).
      */
-    function _callOptionalReturn(IBEP20 token, bytes memory data) private {
+    function _callOptionalReturn(IBaseCash token, bytes memory data) private {
         // We need to perform a low level call here, to bypass Solidity's return data size checking mechanism, since
         // we're implementing it ourselves. We use {Address.functionCall} to perform this call, which verifies that
         // the target address contains contract code and also asserts for success in the low-level call.
@@ -571,13 +573,13 @@ library SafeBEP20 {
         if (returndata.length > 0) {
             // Return data is optional
             // solhint-disable-next-line max-line-length
-            require(abi.decode(returndata, (bool)), 'SafeBEP20: BEP20 operation did not succeed');
+            require(abi.decode(returndata, (bool)), 'SafeBEP20: BaseCash operation did not succeed');
         }
     }
 }
 
 
-// File contracts/SousChef.sol
+
 
 pragma solidity 0.6.12;
 
@@ -585,23 +587,23 @@ pragma solidity 0.6.12;
 
 // import "@nomiclabs/buidler/console.sol";
 
-// SousChef is the chef of new tokens. He can make yummy food and he is a fair guy as well as MasterChef.
-contract SousChef {
+// FarmReserve is the chef of new tokens. He can make yummy food and he is a fair guy as well as Printer.
+contract FarmReserve {
     using SafeMath for uint256;
-    using SafeBEP20 for IBEP20;
+    using SafeBEP20 for IBaseCash;
 
     // Info of each user.
     struct UserInfo {
-        uint256 amount;   // How many SYRUP tokens the user has provided.
+        uint256 amount;   // How many BOND tokens the user has provided.
         uint256 rewardDebt;  // Reward debt. See explanation below.
         uint256 rewardPending;
         //
-        // We do some fancy math here. Basically, any point in time, the amount of SYRUPs
+        // We do some fancy math here. Basically, any point in time, the amount of BONDs
         // entitled to a user but is pending to be distributed is:
         //
         //   pending reward = (user.amount * pool.accRewardPerShare) - user.rewardDebt + user.rewardPending
         //
-        // Whenever a user deposits or withdraws SYRUP tokens to a pool. Here's what happens:
+        // Whenever a user deposits or withdraws BOND tokens to a pool. Here's what happens:
         //   1. The pool's `accRewardPerShare` (and `lastRewardBlock`) gets updated.
         //   2. User receives the pending reward sent to his/her address.
         //   3. User's `amount` gets updated.
@@ -615,8 +617,7 @@ contract SousChef {
         uint256 accRewardPerShare; // Accumulated reward per share, times 1e12. See below.
     }
 
-    // The SYRUP TOKEN!
-    IBEP20 public syrup;
+    IBaseCash public bond;
     // rewards created per block.
     uint256 public rewardPerBlock;
 
@@ -638,12 +639,12 @@ contract SousChef {
     event EmergencyWithdraw(address indexed user, uint256 amount);
 
     constructor(
-        IBEP20 _syrup,
+        IBaseCash _bond,
         uint256 _rewardPerBlock,
         uint256 _startBlock,
         uint256 _endBlock
     ) public {
-        syrup = _syrup;
+        bond = _bond;
         rewardPerBlock = _rewardPerBlock;
         startBlock = _startBlock;
         bonusEndBlock = _endBlock;
@@ -675,7 +676,7 @@ contract SousChef {
         PoolInfo storage pool = poolInfo;
         UserInfo storage user = userInfo[_user];
         uint256 accRewardPerShare = pool.accRewardPerShare;
-        uint256 stakedSupply = syrup.balanceOf(address(this));
+        uint256 stakedSupply = bond.balanceOf(address(this));
         if (block.number > pool.lastRewardBlock && stakedSupply != 0) {
             uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
             uint256 tokenReward = multiplier.mul(rewardPerBlock);
@@ -689,25 +690,25 @@ contract SousChef {
         if (block.number <= poolInfo.lastRewardBlock) {
             return;
         }
-        uint256 syrupSupply = syrup.balanceOf(address(this));
-        if (syrupSupply == 0) {
+        uint256 bondSupply = bond.balanceOf(address(this));
+        if (bondSupply == 0) {
             poolInfo.lastRewardBlock = block.number;
             return;
         }
         uint256 multiplier = getMultiplier(poolInfo.lastRewardBlock, block.number);
         uint256 tokenReward = multiplier.mul(rewardPerBlock);
 
-        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(tokenReward.mul(1e12).div(syrupSupply));
+        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(tokenReward.mul(1e12).div(bondSupply));
         poolInfo.lastRewardBlock = block.number;
     }
 
 
-    // Deposit Syrup tokens to SousChef for Reward allocation.
+    // Deposit Syrup tokens to FarmReserve for Reward allocation.
     function deposit(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
-        syrup.safeTransferFrom(address(msg.sender), address(this), _amount);
+        bond.safeTransferFrom(address(msg.sender), address(this), _amount);
         // The deposit behavior before farming will result in duplicate addresses, and thus we will manually remove them when airdropping.
         if (user.amount == 0 && user.rewardPending == 0 && user.rewardDebt == 0) {
             addressList.push(address(msg.sender));
@@ -719,14 +720,14 @@ contract SousChef {
         emit Deposit(msg.sender, _amount);
     }
 
-    // Withdraw Syrup tokens from SousChef.
+    // Withdraw Syrup tokens from FarmReserve.
     function withdraw(uint256 _amount) public {
         require (_amount > 0, 'amount 0');
         UserInfo storage user = userInfo[msg.sender];
         require(user.amount >= _amount, "withdraw: not enough");
 
         updatePool();
-        syrup.safeTransfer(address(msg.sender), _amount);
+        bond.safeTransfer(address(msg.sender), _amount);
 
         user.rewardPending = user.amount.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt).add(user.rewardPending);
         user.amount = user.amount.sub(_amount);
@@ -738,7 +739,7 @@ contract SousChef {
     // Withdraw without caring about rewards. EMERGENCY ONLY.
     function emergencyWithdraw() public {
         UserInfo storage user = userInfo[msg.sender];
-        syrup.safeTransfer(address(msg.sender), user.amount);
+        bond.safeTransfer(address(msg.sender), user.amount);
         emit EmergencyWithdraw(msg.sender, user.amount);
         user.amount = 0;
         user.rewardDebt = 0;

@@ -10,11 +10,13 @@
 // CakeToken -> FarmCash
 // safeCakeTransfer -> safeCashTransfer
 
-// MasterChef -> Printer
+// MasterChef -> FarmPrinter
+// SousChef -> FarmReserve
 // syrup -> bond
+// SYRUP -> BOND
 // cake -> cash
 // CAKE -> CASH
-// CASHs -> CASHs
+// CAKEs -> CASHs
 **/
 
 
@@ -1092,7 +1094,7 @@ contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, BaseCash:_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "BaseCash::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
