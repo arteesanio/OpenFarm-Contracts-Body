@@ -2,6 +2,7 @@
 
 /**
 // Pancakeswap Fork
+// to deploy: MasterChef -> TheOpenFarmPrinter
 
 // IBEP20 -> IBaseCash
 // BEP20 -> BaseCash
@@ -208,11 +209,6 @@ library SafeMath {
     }
 }
 
-
-
-
-
-
 pragma solidity >=0.4.0;
 
 interface IBaseCash {
@@ -309,11 +305,6 @@ interface IBaseCash {
      */
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
-
-
-
-
-
 
 pragma solidity ^0.6.2;
 
@@ -475,14 +466,7 @@ library Address {
     }
 }
 
-
-
-
-
-
 pragma solidity ^0.6.0;
-
-
 
 /**
  * @title SafeBEP20
@@ -578,11 +562,6 @@ library SafeBEP20 {
     }
 }
 
-
-
-
-
-
 pragma solidity >=0.4.0;
 
 /*
@@ -609,11 +588,6 @@ contract Context {
         return msg.data;
     }
 }
-
-
-
-
-
 
 pragma solidity >=0.4.0;
 
@@ -688,16 +662,7 @@ contract Ownable is Context {
     }
 }
 
-
-
-
-
-
 pragma solidity >=0.4.0;
-
-
-
-
 
 /**
  * @dev Implementation of the {IBaseCash} interface.
@@ -1009,9 +974,6 @@ contract BaseCash is Context, IBaseCash, Ownable {
     }
 }
 
-
-
-
 pragma solidity 0.6.12;
 
 // OpenFarmCash with Governance.
@@ -1252,9 +1214,6 @@ contract OpenFarmCash is BaseCash('OpenFarm Cash', 'CASH') {
         return chainId;
     }
 }
-
-
-
 
 pragma solidity 0.6.12;
 
@@ -1521,14 +1480,7 @@ contract FarmBond is BaseCash('OpenFarm Bond', 'BOND') {
     }
 }
 
-
-
-
 pragma solidity 0.6.12;
-
-
-
-
 
 // import "@nomiclabs/buidler/console.sol";
 
@@ -1552,7 +1504,7 @@ interface IMigratorChef {
 // distributed and the community can show to govern itself.
 //
 // Have fun reading it. Hopefully it's bug-free. God bless.
-contract FarmPrinter is Ownable {
+contract TheOpenFarmPrinter is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBaseCash;
 

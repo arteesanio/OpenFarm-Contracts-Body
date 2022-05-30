@@ -2,6 +2,7 @@
 
 /**
 // Pancakeswap Fork
+// to deploy: SyrupToken -> TheOpenFarmBond
 
 // IBEP20 -> IBaseCash
 // BEP20 -> BaseCash

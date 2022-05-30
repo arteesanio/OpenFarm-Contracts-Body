@@ -2,6 +2,7 @@
 
 /**
 // Pancakeswap Fork
+// to deploy: CakeToken -> TheOpenFarmCash
 
 // IBEP20 -> IBaseCash
 // BEP20 -> BaseCash
@@ -879,8 +880,8 @@ contract FarmCash is Context, IFarmCash, Ownable {
 
 pragma solidity 0.6.12;
 
-// OpenFarmCash with Governance.
-contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
+// FarmCash with Governance.
+contract TheOpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (Printer).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);

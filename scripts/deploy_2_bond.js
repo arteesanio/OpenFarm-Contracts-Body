@@ -12,13 +12,13 @@ async function main() {
   const user0balanceETH = await provider.getBalance(user0);
   console.log(user0, ethers.utils.formatEther(user0balanceETH))
 
-  return
+  // return
 
-  // const CONTRACT_factory = await ethers.getContractFactory("UniswapV2Factory");
-  // const deployedFactory = await CONTRACT_factory.deploy(user0);
-  // await deployedFactory.deployed();
-  // console.log("Factory Address:", deployedFactory.address);
-  // let init_hash = await deployedFactory.INIT_CODE_PAIR_HASH()
+  const CONTRACT_object = await ethers.getContractFactory("TheOpenFarmBond");
+  const deployedContract = await CONTRACT_object.deploy();
+  await deployedContract.deployed();
+  console.log("Contract: Farm Bond | Address:", deployedContract.address);
+  // let init_hash = await deployedContract.INIT_CODE_PAIR_HASH()
   // console.log("init_hash:", init_hash);
 }
 
