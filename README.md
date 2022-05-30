@@ -1,1 +1,1 @@
-# OpenFarm-Contracts-Gland
+# OpenFarm | Miner Smart Contracts
