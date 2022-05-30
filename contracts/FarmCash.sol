@@ -14,7 +14,7 @@
 // syrup -> bond
 // cake -> cash
 // CAKE -> CASH
-// CAKEs -> CASHs
+// CASHs -> CASHs
 **/
 
 
@@ -987,9 +987,9 @@ contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
         );
 
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "CAKE::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "CAKE::delegateBySig: invalid nonce");
-        require(now <= expiry, "CAKE::delegateBySig: signature expired");
+        require(signatory != address(0), "BaseCash::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "BaseCash::delegateBySig: invalid nonce");
+        require(now <= expiry, "BaseCash::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -1019,7 +1019,7 @@ contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
         view
         returns (uint256)
     {
-        require(blockNumber < block.number, "CAKE::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "BaseCash::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -1056,7 +1056,7 @@ contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
         internal
     {
         address currentDelegate = _delegates[delegator];
-        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CAKEs (not scaled);
+        uint256 delegatorBalance = balanceOf(delegator); // balance of underlying CASHs (not scaled);
         _delegates[delegator] = delegatee;
 
         emit DelegateChanged(delegator, currentDelegate, delegatee);
@@ -1092,7 +1092,7 @@ contract OpenFarmCash is FarmCash('OpenFarm Cash', 'CASH') {
     )
         internal
     {
-        uint32 blockNumber = safe32(block.number, "CAKE::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, BaseCash:_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
