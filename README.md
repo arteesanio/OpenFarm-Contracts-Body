@@ -1,1 +1,1 @@
-# OpenFarm | Miner Smart Contracts
+# OpenFarm | Printer Smart Contracts
