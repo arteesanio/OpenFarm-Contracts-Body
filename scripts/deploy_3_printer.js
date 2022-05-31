@@ -14,8 +14,8 @@ async function main() {
 
   // return
 
-  const _cash = "0x2E138eD775CfAdD1823BD110D3369eC010eF434B"
-  const _bond = "0x29819f28686bd416Df02A0d3343f065983a2b20f"
+  const _cash = "0x7BFA6B8f09AED170Bff62Faf6680B7F16c9B9829"
+  const _bond = "0x51eC0B0b84Fa437023922d6e5EfCEb8056cd9716"
 
   const CONTRACT_object = await ethers.getContractFactory("TheOpenFarmPrinter");
   const deployedContract = await CONTRACT_object.deploy(_cash, _bond);

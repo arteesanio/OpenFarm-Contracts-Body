@@ -13,7 +13,7 @@ async function main() {
   console.log(user0, ethers.utils.formatEther(user0balanceETH))
 
   // return
-  const _cash = "0x2E138eD775CfAdD1823BD110D3369eC010eF434B"
+  const _cash = "0x7BFA6B8f09AED170Bff62Faf6680B7F16c9B9829"
 
   const CONTRACT_object = await ethers.getContractFactory("TheOpenFarmBond");
   const deployedContract = await CONTRACT_object.deploy(_cash);
