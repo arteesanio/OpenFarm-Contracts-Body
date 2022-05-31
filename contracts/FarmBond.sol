@@ -48,11 +48,6 @@ contract Context {
     }
 }
 
-
-
-
-
-
 pragma solidity >=0.4.0;
 
 /**
@@ -125,11 +120,6 @@ contract Ownable is Context {
         _owner = newOwner;
     }
 }
-
-
-
-
-
 
 pragma solidity >=0.4.0;
 
@@ -227,12 +217,6 @@ interface IBaseCash {
      */
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
-
-
-
-
-
-
 pragma solidity >=0.4.0;
 
 /**
@@ -421,11 +405,6 @@ library SafeMath {
     }
 }
 
-
-
-
-
-
 pragma solidity ^0.6.2;
 
 /**
@@ -586,16 +565,7 @@ library Address {
     }
 }
 
-
-
-
-
-
 pragma solidity >=0.4.0;
-
-
-
-
 
 /**
  * @dev Implementation of the {IBaseCash} interface.
@@ -907,9 +877,6 @@ contract BaseCash is Context, IBaseCash, Ownable {
     }
 }
 
-
-
-
 pragma solidity 0.6.12;
 
 // FarmCash with Governance.
@@ -1151,13 +1118,10 @@ contract FarmCash is BaseCash('OpenFarm Cash', 'CASH') {
     }
 }
 
-
-
-
 pragma solidity 0.6.12;
 
 // FarmBond with Governance.
-contract FarmBond is BaseCash('OpenFarm Bond', 'BOND') {
+contract TheOpenFarmBond is BaseCash('OpenFarm Bond', 'BOND') {
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);

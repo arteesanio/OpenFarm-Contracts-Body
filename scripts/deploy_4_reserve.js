@@ -13,12 +13,14 @@ async function main() {
   console.log(user0, ethers.utils.formatEther(user0balanceETH))
 
   // return
-  const _cash = "0x2E138eD775CfAdD1823BD110D3369eC010eF434B"
 
-  const CONTRACT_object = await ethers.getContractFactory("TheOpenFarmBond");
-  const deployedContract = await CONTRACT_object.deploy(_cash);
+  const _bond = "0x29819f28686bd416Df02A0d3343f065983a2b20f"
+  const theStartingBlock = await provider.getBlockNumber();
+
+  const CONTRACT_object = await ethers.getContractFactory("TheOpenFarmReserve");
+  const deployedContract = await CONTRACT_object.deploy(_bond, theStartingBlock+69420);
   await deployedContract.deployed();
-  console.log("Contract: Farm Bond | Address:", deployedContract.address);
+  console.log("Contract: Farm Reserve | Address:", deployedContract.address);
   // let init_hash = await deployedContract.INIT_CODE_PAIR_HASH()
   // console.log("init_hash:", init_hash);
 }

@@ -2,6 +2,7 @@
 
 /**
 // Pancakeswap Fork
+// to deploy: SousChef -> TheOpenFarmReserve
 
 // IBEP20 -> IBaseCash
 // BEP20 -> BaseCash
@@ -587,8 +588,8 @@ pragma solidity 0.6.12;
 
 // import "@nomiclabs/buidler/console.sol";
 
-// FarmReserve is the chef of new tokens. He can make yummy food and he is a fair guy as well as Printer.
-contract FarmReserve {
+// FarmReserve is the chef of new tokens. He can make trust and he is a fair guy as well as Printer.
+contract TheOpenFarmReserve {
     using SafeMath for uint256;
     using SafeBEP20 for IBaseCash;
 
@@ -640,13 +641,11 @@ contract FarmReserve {
 
     constructor(
         IBaseCash _bond,
-        uint256 _rewardPerBlock,
-        uint256 _startBlock,
         uint256 _endBlock
     ) public {
         bond = _bond;
-        rewardPerBlock = _rewardPerBlock;
-        startBlock = _startBlock;
+        rewardPerBlock = 1 finney;
+        startBlock = block.number;
         bonusEndBlock = _endBlock;
 
         // staking pool
